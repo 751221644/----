@@ -101,8 +101,6 @@ export default {
   },
   components: { homeHeader },
   mounted() {
-    // console.log("mounted this", this);
-    // console.info("URL", URL);
     this._getPayList();
   },
   methods: {
@@ -112,13 +110,11 @@ export default {
       self.$api.global
         .getOrderList(args)
         .then(res => {
-          // console.info("res.data", res.data.data);
           if (res.data.result === 0) {
             let { data, count } = res.data.data.data;
 
             self.ORDERLIST = data;
             self.pagesNum = +count;
-            // console.log("self.ORDERLIST", self.ORDERLIST);
           } else {
             self.$message.error(result.msg);
           }
@@ -127,7 +123,6 @@ export default {
     },
     //分页
     _currentChange(res) {
-      console.info("res", res);
       this._getPayList({
         page: res
       });
@@ -136,13 +131,9 @@ export default {
     },
     //跳转支付页
     toPay(item, idx) {
-      console.log("item", item);
-      console.log("idx", idx);
       // item.child.forEach((element,index) => {
 
       // });
-      console.log("item.WIDout_trade_no", item.WIDout_trade_no);
-      console.log("this.$route.fullPath", this.$route.fullPath);
 
       this.$storage.set("historyPath", this.$route.fullPath);
 

@@ -23,13 +23,14 @@ import VueWechatTitle from 'vue-wechat-title'
 import VueVideoPlayer from 'vue-video-player'
 import 'videojs-contrib-hls.js/src/videojs.hlsjs'
 import VueClipboard from 'vue-clipboard2'
-
+import _ from 'lodash'
 Vue.use(VueClipboard)
 Vue.use(VueVideoPlayer)
 Vue.use(VueWechatTitle)
 Vue.use(VueRouter)
 
 Vue.config.productionTip = false
+Vue.prototype._ = _
 Vue.prototype.$echarts = echarts              //echart
 Vue.prototype.$api = api                     //api调用封装出口
 Vue.prototype.$global = global               //全局通用函数
@@ -54,14 +55,10 @@ router.beforeEach((to, from, next) => {
           // next({ path: '/lessonCenter' })
           var _role = storage.get('role')
           var isChange = storage.get('isChange')
-          console.log('changeRole////main.js', _role)
-          console.log('changeRole////main.js', isChange)
           //权限为普通用户时
           if (_role == 'staff') {
-            console.log('走了我这--普通员工');
             next({ path: '/studyCenter' })
           } else {
-            console.log('走了我这--管理员', to.fullPath);
             if (isChange) {
               next({
                 path: '/companyManage'
@@ -85,7 +82,6 @@ router.beforeEach((to, from, next) => {
     }
     //判断是否为login页url拼接
     if (to.fullPath.indexOf('/login?') != -1) {
-      console.log('login', to);
 
     }
     else {

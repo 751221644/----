@@ -160,7 +160,6 @@ export default {
     },
     methods:{
         query(str){
-            console.log(this.valueTime);
             const self = this;
             self.$tools.startLoding()
             if(this.valueTime){
@@ -183,17 +182,14 @@ export default {
                 page:this.page
             };
             this.$api.person.studyLog(param).then(res => {
-                console.log(res);
                 if(res.data.result == 0){
-                    console.log(res.data.data);
                     if(res.data.data.data){
                         this.tableData = res.data.data.data;
-                        console.log(res.data.data.data);
+                        console.log(' this.tableData', this.tableData);
                         this.isShow = true;
                         this.nodata = false;
                         this.totalPage = res.data.data.pages;
                     }else{
-                        console.log(1111);
                         this.tableData = [];
                         this.isShow = false;
                         this.nodata = true;
@@ -221,13 +217,12 @@ export default {
             .then(res => {
                 if(res.data.data){
                     if (res.data.data.type == 2) {
-                        console.log(res.data.data.redirect_url);
                              var href = res.data.data.redirect_url;
                              window.open(href)
                     } else if (res.data.data.type == 1) {
                         this.$router.push({
                           path: "studyVideo",
-                          query: { package_id: this.package_id, course_id: course_id }
+                          query: { package_id: package_id, course_id: course_id }
                         });
                     }
                 }else{

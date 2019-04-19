@@ -1,7 +1,7 @@
 <template>
   <div class="buy_card">
     <el-card class="box-card">
-      <div style="padding:0 40px">
+      <div style="padding:0 40px;padding-bottom: 100px;">
         <div>
           <el-steps
             class="flex just-c"
@@ -48,7 +48,7 @@
 
             <el-table-column prop="total_fee" label="小计">
               <template slot-scope="scope">
-                <span>{{scope.row.total_fee}}</span>
+                <span>{{scope.row.favprice*scope.row.count}}</span>
                 <!-- <span  v-if="scope.row.isBuyCount">{{total_fee}}</span> -->
               </template>
             </el-table-column>
@@ -165,6 +165,8 @@ export default {
 
       //只够买子账号
       if (this.$route.query.onlyBuyCount) {
+        console.log('只购买子账号');
+        
         this.pay_staff(parms);
       } else {
         this.toPay(parms);
@@ -172,14 +174,15 @@ export default {
     }
   },
   computed: {
-    computeTotalPrice() {
+
+  },
+  methods: {
+        computeTotalPrice() {
       this.totalPrice = 0;
       this.tableData.forEach(ele => {
         this.totalPrice += Number(ele.total_fee);
       });
-    }
-  },
-  methods: {
+    },
     pay_staff() {
       var parms = {
         count: 1
@@ -191,7 +194,7 @@ export default {
           res.data.data.staff_product.count = 1;
           this.totalPrice =
             res.data.data.staff_product.count *
-            res.data.data.staff_product.total_fee;
+            res.data.data.staff_product.favprice;
           this.tableData.push(res.data.data.staff_product);
           this.giveIsCount()
         })

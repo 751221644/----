@@ -180,15 +180,12 @@ export default {
     },
     methods:{
     	query(str){
-            console.log(this.valueTime);
             const self = this;
             self.$tools.startLoding()
     		if(this.valueTime){
-                console.log(111);
     			this.valueTime0 = this.valueTime[0];
     			this.valueTime1 = this.valueTime[1];
     		}else{
-                console.log(222);
     			this.valueTime0 = '';
     			this.valueTime1 = '';
     		}
@@ -196,7 +193,6 @@ export default {
                 this.valueTime0 = '';
                 this.valueTime1 = '';
             }
-            console.log(this.valueTime0,this.valueTime1);
             if(str == 'pagechange'){
 
             }else{
@@ -212,7 +208,6 @@ export default {
     			page:this.page
     		};
     		this.$api.person.staffStudyLog(param).then(res => {
-    			console.log(res);
                 if(res.data.result == 0){
                     if(res.data.data.data){
                         this.nodata = false;
@@ -232,7 +227,6 @@ export default {
     		});
     	},
     	handleSelect(val){
-    		console.log(this.valueDepart);
     		this.curDepartId = val.id;//当前部分Id
     	},
     	querySearchAsync(str,cb){
@@ -243,7 +237,6 @@ export default {
     			this.curDepartId = '';
     		}
     		this.$api.person.departMent(param).then(res => {
-    			console.log(res);
                 if(res.data.result == 0){
                     if(res.data.data){
                         this.departArr = res.data.data;
@@ -255,7 +248,6 @@ export default {
                             }
                             
                         }
-                        console.log(this.departArr);
                         cb(this.departArr);
                     }
                 }else{
@@ -288,7 +280,6 @@ export default {
             .then(res => {
                 if(res.data.data){
                     if (res.data.data.type == 2) {
-                        console.log(res.data.data.redirect_url);
                              var href = res.data.data.redirect_url;
                              window.open(href)
                     } else if (res.data.data.type == 1) {

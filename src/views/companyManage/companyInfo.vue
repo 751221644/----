@@ -8,23 +8,24 @@
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr>
                 <th>企业ID：</th>
-                <td>{{schoolInfo['id']}}</td>
+                <td v-if="schoolInfo.id">{{schoolInfo.id}}</td>
+                <td v-else>暂无</td>
               </tr>
               <tr>
                 <th>企业大学名称：</th>
-                <td>{{schoolInfo['school_name']}}</td>
+                <td>{{schoolInfo.school_name}}</td>
               </tr>
               <tr>
                 <th>企业名称：</th>
-                <td>{{schoolInfo['enter_name']}}</td>
+                <td>{{schoolInfo.enter_name}}</td>
               </tr>
               <tr>
                 <th>公司规模：</th>
-                <td>{{enpPeople[schoolInfo['people']]}}</td>
+                <td>{{enpPeople[schoolInfo.people]}}</td>
               </tr>
               <tr>
                 <th>联系方式：</th>
-                <td>{{schoolInfo['telephone']}}</td>
+                <td>{{schoolInfo.telephone}}</td>
               </tr>
               <tr>
                 <th>&nbsp;</th>
@@ -36,8 +37,12 @@
                     class="ui-modify-btn ui-btns"
                   >修改</el-button>
                   <p class="z-link">
-                  <span>专属登录链接： <b>https://peixun.2haohr.com/i/{{schoolInfo.id}}</b>  </span>
-                  <span>如要预览页面，请复制后用其它浏览器打开</span></p>
+                    <span>
+                      专属登录链接：
+                      <b>https://peixun.2haohr.com/i/{{schoolInfo.id}}</b>
+                    </span>
+                    <span>如要预览页面，请复制后用其它浏览器打开</span>
+                  </p>
                   <!-- <router-link  class="ui-btns ui-login-btn">专属登陆页</router-link> -->
                 </td>
               </tr>
@@ -296,6 +301,8 @@ export default {
         .then(res => {
           let result = res.data.data;
           //企业信息
+          console.log("result.school_info", result.school_info);
+
           self.schoolInfo = result.school_info;
           self.enpPeople = result.enp_people;
           self.imageUrl = result.school_info.logo;
@@ -316,7 +323,6 @@ export default {
     //修改企业信息
     updateCompanyInfo(args) {
       let self = this;
-      console.log("args", args);
       // const parms = args;
       self.$api.companyInfo
         .updateCompanyInfo(args)
@@ -329,7 +335,7 @@ export default {
               onClose: function() {
                 // window.location.reload()
                 self.getCompanyInfo();
-                self.modifyInfomation = !self.modifyInfomation
+                self.modifyInfomation = !self.modifyInfomation;
               }
             });
           } else {
@@ -346,11 +352,9 @@ export default {
     //   // file_url = self.$refs.upload.uploadFiles[0].url;
     //   let formData = new FormData();
     //   // formData.append("imgFile", file);
-    //       console.info("uploadSectionFile1", file);
     //   self.$api.global
     //     .uploadImage(formData)
     //     .then(res => {
-    //       console.info("uploadSectionFile2", res);
     //     })
     //     .catch(err => {});
     // },
@@ -400,7 +404,6 @@ export default {
         .modifyCompanyLogo(prams)
         .then(res => {
           let r = res.data;
-          console.info(r);
           if (r.result === 0) {
             // self._modifyCompanyLogo(r.data)
             self.$message({
@@ -418,7 +421,6 @@ export default {
     _modifyInfomation() {
       let self = this;
       self.modifyInfomation = true;
-      console.info(self.schoolInfo);
       //填充默认表单
       self.modifyInfoForm = {
         school_name: self.schoolInfo.school_name,
@@ -430,14 +432,12 @@ export default {
     //_modifyInfomation 修改企业信息提交
     _modifyInfoSubmit(modifyInfoForm) {
       let self = this;
-      // console.info(this.$refs[modifyInfoForm].validate);
 
       // this.changeAdmin = false;
       this.$refs[modifyInfoForm].validate(valid => {
         if (valid) {
           self.updateCompanyInfo(self.modifyInfoForm);
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -450,7 +450,7 @@ export default {
           self.$api.companyInfo
             .changeAdmin(self.changeAdminForm)
             .then(res => {
-              if(res.data.result==0){
+              if (res.data.result == 0) {
                 self.$message({
                   message: "更改成功,即将退出,请重新登录",
                   type: "success",
@@ -460,8 +460,8 @@ export default {
                   }
                 });
                 self._resetForm(changeAdminForm);
-              }else{
-                self.$message.error(res.data.msg)
+              } else {
+                self.$message.error(res.data.msg);
               }
             })
             .catch(err => {});
@@ -476,39 +476,42 @@ export default {
       let TIME_COUNT = self.$config.MSGTIME;
 
       //方法1: 直接生成一个验证码对象
-      var captcha1 = new TencentCaptcha(self.$config.TencentCaptcha_appid, function(r) {
-        /* callback */
-        if (r.ret === 0) {
-          let args = {
-            mobile: self.adminData[0]["mobile"],
-            ticket: r.ticket,
-            randstr: r.randstr
-          };
-          self.$api.global
-            .getMsg(args)
-            .then(res => {
-              let result = res.data;
-              if (result.result == 0) {
-                if (!self.MSG.timer) {
-                  self.MSG.count = TIME_COUNT;
-                  self.MSG.show = false;
-                  self.MSG.timer = setInterval(() => {
-                    if (self.MSG.count > 0 && self.MSG.count <= TIME_COUNT) {
-                      self.MSG.count--;
-                    } else {
-                      self.MSG.show = true;
-                      clearInterval(self.MSG.timer); // 清除定时器
-                      self.MSG.timer = null;
-                    }
-                  }, 1000);
+      var captcha1 = new TencentCaptcha(
+        self.$config.TencentCaptcha_appid,
+        function(r) {
+          /* callback */
+          if (r.ret === 0) {
+            let args = {
+              mobile: self.adminData[0]["mobile"],
+              ticket: r.ticket,
+              randstr: r.randstr
+            };
+            self.$api.global
+              .getMsg(args)
+              .then(res => {
+                let result = res.data;
+                if (result.result == 0) {
+                  if (!self.MSG.timer) {
+                    self.MSG.count = TIME_COUNT;
+                    self.MSG.show = false;
+                    self.MSG.timer = setInterval(() => {
+                      if (self.MSG.count > 0 && self.MSG.count <= TIME_COUNT) {
+                        self.MSG.count--;
+                      } else {
+                        self.MSG.show = true;
+                        clearInterval(self.MSG.timer); // 清除定时器
+                        self.MSG.timer = null;
+                      }
+                    }, 1000);
+                  }
+                } else {
+                  self.$message.error(result.msg);
                 }
-              } else {
-                self.$message.error(result.msg);
-              }
-            })
-            .catch(err => {});
+              })
+              .catch(err => {});
+          }
         }
-      });
+      );
       captcha1.show(); // 显示验证码
     },
     //重置表单
@@ -542,7 +545,6 @@ export default {
     //选择新管理员 加载所有部门和部门下员工
     loadNode(node, resolve) {
       let self = this;
-      console.info(node.level);
       if (node.level === 0) {
         let arr = self.depGroupby;
         let arr1 = [];
@@ -560,7 +562,6 @@ export default {
             let result = res.data.data.dep_staff;
             for (let index = 0; index < result.length; index++) {
               let ele = result[index];
-              console.info("ele", ele);
               children.push({
                 new_uid: ele.uid,
                 dep_name: ele.name + "(" + ele.mobile + ")",
@@ -593,7 +594,6 @@ export default {
           .then(res => {
             let result = res.data.data.data.data;
             let arr = [];
-            console.info(result);
             for (let index = 0; index < result.length; index++) {
               let ele = result[index];
               arr.push({
@@ -614,8 +614,7 @@ export default {
       self.autocomplete.new_uid = item.new_uid;
       self.autocomplete.name = item.name;
       self.autocomplete.mobile = item.mobile;
-    },
-    
+    }
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <section style="padding:0 35px;" ref="viewBox">
-    <div style="padding:30px;background:#ffffff;height:100%;padding-top:0;">
+  <section  class="section_study" ref="viewBox">
+    <div class="wrap_cStudy" >
       <ul>
         <li v-for="(item,index) in studyData" class="box">
           <div class="left">
@@ -27,7 +27,9 @@
         </li>
       </ul>
       <div class="nodata" v-if="nodata" style="text-align:center;line-height:400px;">暂无课程，请联系管理员为您分配</div>
-      <div class="block" style="margin-top:30px;" v-if="isShow">
+     
+    </div>
+     <div class="block" v-if="isShow">
         <el-pagination
           @current-change="handleCurrentChange"
           :current-page.sync="page"
@@ -37,7 +39,6 @@
           :background="true"
         ></el-pagination>
       </div>
-    </div>
   </section>
 </template> 
 <script>
@@ -62,23 +63,19 @@ export default {
         page: this.page
       };
       this.$api.person.getStudyCenter(params).then(res => {
-        console.log(res);
         if(res.data.result === 0){
           if (res.data.data.data) {
             //请求成功
             var data = res.data.data.data;
             this.isShow = true;
-            console.log(data);
             if (data.length == 0) {
               //没有课程
             } else {
               //有课程
               for (var i = 0; i < data.length; i++) {
                 data[i].rate = data[i].rate.substring(0, data[i].rate.length - 1);
-                console.log(data[i].rate);
               }
               this.studyData = data;
-              console.log(this.studyData);
               this.totalPage = res.data.data.pages;
             }
           } else {
@@ -96,7 +93,6 @@ export default {
     	this.$router.push({ path: 'studyVideo'});
     },
     handleCurrentChange(num) {
-      console.log(num);
       this.page = num;
       this.getStudyCenterData({ page: this.page });
     },
@@ -104,7 +100,6 @@ export default {
     	this.$router.push({ path: 'studyDetail', query: { package_id: package_id }});
     },
     // beforeRouteEnter(to,from,next) {
-    //   console.log(to,from);
     //   if((to.path == '/companyManage'&&to.query.changeSchool&&from.path == '/person')||(to.path == '/studyCenter'&&to.query.changeSchool&&from.path == '/person')){
     //     next(()=>{
     //       window.location.reload();
@@ -124,6 +119,20 @@ export default {
 };
 </script>
 <style scoped lang="less">
+.section_study{
+    height: 100%;
+    margin-bottom: 70px;
+    background: #fff;
+     margin: 0 35px 50px 35px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.wrap_cStudy{
+  padding: 0px  30px;
+    background: rgb(255, 255, 255);
+    height: auto;
+}
 ul,
 li {
   width: 100%;
@@ -214,6 +223,11 @@ li {
       margin-top: 20px;
     }
   }
+}
+.block{
+      margin-bottom: 50px;
+    background-color: #fff;
+    padding: 30px 0;
 }
 .el-pagination {
   text-align: center;

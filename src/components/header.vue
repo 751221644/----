@@ -41,8 +41,8 @@ export default {
     };
   },
   created() {
-    this.getAllSchool();
     this.getSchoolInfo();
+    this.getAllSchool();
   },
   mounted() {},
 
@@ -52,8 +52,7 @@ export default {
         .getAllSchool()
         .then(res => {
           this.allSchoolArr = res.data.data.data.data;
-          console.log("allSchoolArr", this.allSchoolArr);
-          console.log('res.data',res.data.data.data.count);
+          
           if(res.data.result==66||res.data.data.data.count==1){
             this.hiddenChange = false
           }else{
@@ -71,7 +70,6 @@ export default {
       this.$api.school
         .changeSchool(parms)
         .then(res => {
-          console.log("res", res.data.data.school_id);
           this.allSchoolArr.forEach((item, idx) => {
             if (item.school_id == res.data.data.school_id) {
               this.school_name = item.school_name;
@@ -82,17 +80,13 @@ export default {
               this.$api.toLogin
                 .getUserRole(parms)
                 .then(res => {
-                  console.log('res,data,',res.data);
-                  console.log('this.Sfewqfewqgeqw',this.$store.state);
-                  
                   // this.$storage.set("changeRole", res.data.data.user_role);
                    this.$storage.set("role", res.data.data.user_role);
-              this.$storage.set("isChange","isChange");
+                   this.$storage.set("isChange","isChange");
 
                   // this.$store.dispatch();
 
                   this.$store.dispatch("getRole", res.data.data.user_role).then(res=>{
-                      console.log('1111111');
                       
 
                   // this.$storage.set("changeRole", res.data.data.user_role);
@@ -103,7 +97,6 @@ export default {
                   Error(err);
                 });
 
-              // console.log(this.$route.path);//判断当前路由地址
               // if(this.$route.path == '/person'){
               //   this.$store.dispatch('schoolId',s_id);
               // }
@@ -118,10 +111,6 @@ export default {
         .getSchoolInfo()
         .then(res => {
           let {school_name,logo} = res.data.data.school_info
-
-          console.log(school_name);
-          console.log(logo);
-          
           this.school_name = school_name;
           this.school_img = logo;
         })

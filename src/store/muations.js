@@ -5,8 +5,6 @@ const mutations = {
   getInfo(state, token) {
     var info = store.get('personInfo')
     var role = store.get('getInfo')
-    console.log('role',role);
-    console.log('info',info);
     
     
     state.info = {
@@ -48,16 +46,13 @@ const mutations = {
     //   var  changeRole = '';
     // }
     var _role = store.get('role')
-    console.log('_____________role',_role);
     
     // var  changeRole = store.get('changeRole')  
-    // console.log('changeRole',changeRole);
     
     var  role = state.info.role
     if(_role){
       role = _role
     }
-    console.log('=============role',role);
 
     
     switch (role) {
@@ -65,11 +60,8 @@ const mutations = {
         state.routers = defaultRouter.concat(routers)
         break;
       case 'staff':
-        console.log('routers',routers);
-        console.log('defaultRouter',defaultRouter);
         var new_router =[]
         routers.forEach((ele,idx)=>{
-          console.log('ele',ele);
           ele.meta.role.forEach((e,i)=>{
             if(e=='staff'){
               new_router.push(ele)

@@ -5852,7 +5852,7 @@ node-pre-gyp@^0.10.0:
     semver "^5.3.0"
     tar "^4"
 
-node-sass@^4.9.2:
+node-sass@^4.5.3, node-sass@^4.9.2:
   version "4.11.0"
   resolved "https://registry.yarnpkg.com/node-sass/-/node-sass-4.11.0.tgz#183faec398e9cbe93ba43362e2768ca988a6369a"
   integrity sha512-bHUdHTphgQJZaF1LASx0kAviPH7sGlcyNhWade4eVIpFp6tsn7SV8xNMTbsQFpEV9VXpnwTTnNYlfsZXgGgmkA==
@@ -7503,6 +7503,17 @@ sass-graph@^2.2.4:
     scss-tokenizer "^0.2.3"
     yargs "^7.0.0"
 
+sass-loader@^6.0.6:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-6.0.7.tgz#dd2fdb3e7eeff4a53f35ba6ac408715488353d00"
+  integrity sha512-JoiyD00Yo1o61OJsoP2s2kb19L1/Y2p3QFcCdWdF6oomBGKVYuZyqHWemRBfQ2uGYsk+CH3eCguXNfpjzlcpaA==
+  dependencies:
+    clone-deep "^2.0.1"
+    loader-utils "^1.0.1"
+    lodash.tail "^4.1.1"
+    neo-async "^2.5.0"
+    pify "^3.0.0"
+
 sass-loader@^7.0.3:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-7.1.0.tgz#16fd5138cb8b424bf8a759528a1972d72aad069d"
@@ -8804,6 +8815,11 @@ vue-clipboard2@^0.3.0:
   dependencies:
     clipboard "^2.0.0"
 
+vue-count-to@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/vue-count-to/-/vue-count-to-1.0.13.tgz#3e7573ea6e64c2b2972f64e0a2ab2e23c7590ff3"
+  integrity sha512-6R4OVBVNtQTlcbXu6SJ8ENR35M2/CdWt3Jmv57jOUM+1ojiFmjVGvZPH8DfHpMDSA+ITs+EW5V6qthADxeyYOQ==
+
 vue-hot-reload-api@^2.2.0:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.3.tgz#2756f46cb3258054c5f4723de8ae7e87302a1ccf"
@@ -8843,6 +8859,15 @@ vue-loader@^13.3.0:
     vue-hot-reload-api "^2.2.0"
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
+
+vue-loading-spinner@^1.0.11:
+  version "1.0.11"
+  resolved "https://registry.yarnpkg.com/vue-loading-spinner/-/vue-loading-spinner-1.0.11.tgz#43bae9b034b84db374e70201c706e4f145bb0dec"
+  integrity sha512-qWBK7hzA0IbfyjgOmEm/8Ov4NFRdsAjoGt3JQmId76xWzua9tOjgqUwyiONWUCkkyi26NLJR9ZpiK5m8nsB1IA==
+  dependencies:
+    node-sass "^4.5.3"
+    sass-loader "^6.0.6"
+    vue "^2.3.3"
 
 vue-property-decorator@^6.0.0:
   version "6.1.0"
@@ -8893,6 +8918,11 @@ vue-wechat-title@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/vue-wechat-title/-/vue-wechat-title-2.0.5.tgz#628dd4bedca10ef39b9a98f67ca564a4db77260b"
   integrity sha512-bCfKnJpbquqNY5ygNN7nRgNHGhyinWd277ecVh0Z15Tk8nS69catrvQSJIuRxXUOxoO/4Y32c6IfNbQUA8oh0g==
+
+vue@^2.3.3:
+  version "2.6.10"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.10.tgz#a72b1a42a4d82a721ea438d1b6bf55e66195c637"
+  integrity sha512-ImThpeNU9HbdZL3utgMCq0oiMzAkt1mcgy3/E6zWC/G6AaQoeuFdsl9nDhTDU3X1R6FK7nsIUuRACVcjI+A2GQ==
 
 vue@^2.5.2:
   version "2.6.9"

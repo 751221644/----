@@ -1,9 +1,6 @@
 <template>
   <div class="wrap_card">
-    <el-card
-      class="box-card"
-      body-style=" flex-direction: column; display:flex;     padding-bottom: 250px; height: 100%; "
-    >
+    <div class="box-card">
       <div class="flex">
         <el-tabs v-model="activeName" style="padding:10px" @tab-click="handleClick">
           <el-tab-pane :label="'全部员工('+use_count+')'" name="first">
@@ -38,7 +35,12 @@
                   <span class="canClick" @click="toBuyCount">增加账号</span>
                 </div>
                 <div style="width:308px">
-                  <el-input placeholder="请输入员工姓名" @keyup.enter.native="searchCont" v-model="search" @change="searchCont">
+                  <el-input
+                    placeholder="请输入员工姓名"
+                    @keyup.enter.native="searchCont"
+                    v-model="search"
+                    @change="searchCont"
+                  >
                     <i class="el-icon-search el-input__icon" slot="suffix" @click="_clickForSearch"></i>
                   </el-input>
                 </div>
@@ -50,6 +52,7 @@
                   tooltip-effect="dark"
                   :data="logData"
                   style="width: 100%"
+                  v-loading="SHLoading"
                   border
                 >
                   <el-table-column type="selection" min-width="55"></el-table-column>
@@ -89,7 +92,12 @@
                 <span class="canClick" @click="toBuyCount">增加账号</span>
               </div>
               <div style="width:308px">
-                <el-input placeholder="请输入员工姓名" v-model="search"  @keyup.enter.native="searchCont"  @change="searchCont">
+                <el-input
+                  placeholder="请输入员工姓名"
+                  v-model="search"
+                  @keyup.enter.native="searchCont"
+                  @change="searchCont"
+                >
                   <i class="el-icon-search el-input__icon" slot="suffix" @click="_clickForSearch"></i>
                 </el-input>
               </div>
@@ -102,6 +110,7 @@
               style="width: 100%"
               @selection-change="handleSelectionChange"
               border
+              v-loading="allLoading"
             >
               <el-table-column type="selection" width="55"></el-table-column>
               <el-table-column prop="name" label="姓名" width="250"></el-table-column>
@@ -124,7 +133,7 @@
           <el-form-item label="转移至" :label-width="formLabelWidth">
             <el-select v-model="shiftStaff" placeholder="请选择要转移的部门" @change="changeDep">
               <el-option
-                v-for="(value, key) in gourpArr"
+                v-for="(value, key) in specialArr"
                 :key="key"
                 :label="value.dep_name"
                 :value="key"
@@ -172,7 +181,7 @@
           <el-form-item label="部门" :label-width="formLabelWidth">
             <el-select v-model="selectGroup" placeholder="请选择编辑部门" @change="changeDep">
               <el-option
-                v-for="(value, key) in gourpArr"
+                v-for="(value, key) in specialArr"
                 :key="key"
                 :label="value.dep_name"
                 :value="key"
@@ -241,6 +250,8 @@
           >复制链接</el-button>
         </div>
       </el-dialog>
+    </div>
+    <div class="block">
       <el-pagination
         v-if="activeName == 'first'"
         background
@@ -255,7 +266,7 @@
         @current-change="currPageSH"
         :total="pageTotalSH"
       ></el-pagination>
-    </el-card>
+    </div>
   </div>
 </template>
 <script>
@@ -273,6 +284,8 @@ export default {
           children: []
         }
       ],
+      allLoading: true,
+      SHLoading: true,
       defaultProps: {
         children: "children",
         label: "dep_name"
@@ -318,7 +331,8 @@ export default {
       hasSelectAll: false, //全部表格中是否勾选了员工
       SHCount: null, //审核员工总数
       pageTotalSH: null, //审核员工分页器总数
-      EditDepId: null,
+      EditDepId: null, //部门id
+      isClickTree: false, //是否点击部门树
       addWay: false,
       args: {
         currentPage: 1, //全部员工分页器的分页，默认第一页
@@ -328,7 +342,8 @@ export default {
         currentPage: 1, //审核员工分页器的分页，默认第一页
         name: ""
       },
-      selectno: false
+      selectno: false,
+      specialArr: []
     };
   },
   methods: {
@@ -340,33 +355,26 @@ export default {
       this.$message.error("复制失败");
     },
 
-    //搜索表格数据
+    //搜索部门树的数据
     clickTreePane(data) {
-      console.log("node-click", data);
       var that = this;
       if (data.dep_id) {
-        console.log("data.dep_id", data.dep_id);
+        that.isClickTree = true;
         that.EditDepId = data.dep_id;
-        // console.log('this.formdep.name', data.dep_name);
-
         this.formdep.name = data.dep_name.substring(
           0,
           data.dep_name.length - 5
         );
-        // console.log('this.formdep.name',this.formdep.name);
 
         var parms = {
           dep_id: data.dep_id
         };
-        console.log("parms", parms);
-
+        this.allLoading = true;
         this.getAllList(parms);
       }
     },
     //节点发生变化
     // currentchange(v,a,){
-    //   console.log('v',v);
-    //   console.log('a',a);
 
     // },
 
@@ -398,21 +406,17 @@ export default {
     },
     //审核表格数据
     staff_list_log(argsSH) {
-      console.log("argsSH", argsSH);
       var parms = {
         page: argsSH.currentPage,
         name: argsSH.name
       };
-      console.log("parms", parms);
 
       this.$api.companyInfo
         .staff_list_log(parms)
         .then(res => {
-          console.log("res111111111111", res.data.data.pages_num);
           this.pageTotalSH = res.data.data.pages_num * 10;
           this.SHCount = res.data.data.data.count;
           // this.logData = res.data.data.data.data;
-          console.log("this.logData", this.logData);
           res.data.data.data.data.forEach((element, index) => {
             switch (element.status) {
               case "1":
@@ -432,7 +436,7 @@ export default {
             }
           });
           this.logData = res.data.data.data.data;
-          console.log("this.logData", this.logData);
+          this.SHLoading = false;
         })
         .catch(err => Error(err));
     },
@@ -453,7 +457,6 @@ export default {
     },
     //获取全部员工列表
     getAllList(args) {
-      console.log("args", args);
       //筛选部门id
       if (args.dep_id) {
         var parms = {
@@ -471,6 +474,7 @@ export default {
       this.$api.companyInfo
         .getStaffListByName(parms)
         .then(res => {
+          this.allLoading = false;
           this.pageTotal = res.data.data.pages_num * 10;
           this.allsaffData = res.data.data.data.data;
         })
@@ -478,42 +482,35 @@ export default {
     },
     //搜索员工姓名
     _clickForSearch() {
-      console.log(this.search);
       this.args.name = this.search;
+      this.allLoading = true;
       this.getAllList(this.args);
     },
     //全部员工分页
     currPage(e) {
+      this.allLoading = true;
       this.args.currentPage = e;
       this.getAllList(this.args);
     },
     //审核分页
     currPageSH(e) {
-      console.log("e", e);
-
       this.argsSH.currentPage = e;
-      console.log(" this.argsSH", this.argsSH);
 
       this.staff_list_log(this.argsSH);
     },
     // 更改部门
     changeDep(val) {
-      console.log("val", val);
-      console.log("this", this.gourpArr);
       this.gourpArr.forEach((ele, idx) => {
         if (val == idx) {
           this.dep_id = ele.dep_id;
         }
       });
     },
+
     //编辑员工信息
     editSuff(val) {
-      console.log("val", val);
-      console.log("allsaffData", this.allsaffData);
-
       this.allsaffData.forEach((ele, idx) => {
         if (ele.id == val.id) {
-          console.log("ele", ele);
           this.staffId = val.id;
           this.form.name = ele.name;
           this.selectGroup = ele.dep_name;
@@ -555,7 +552,6 @@ export default {
       this.$api.companyInfo
         .staff_access(parms)
         .then(res => {
-          console.log("res", res);
           this.$message.error("已拒绝");
           var parms = {
             currentPage: 1,
@@ -590,6 +586,7 @@ export default {
           }
 
           this.dialogFormVisible = false;
+          this.allLoading = true;
           this.getAllList(this.args);
         })
         .catch(err => Error(err));
@@ -616,7 +613,6 @@ export default {
     },
     //删除员工
     deleteSuff(row) {
-      console.log("row", row);
       if (row.id) {
         //单独删除
         this.$confirm("确认要移除该员工吗？", "提示", {
@@ -637,7 +633,7 @@ export default {
                     type: "success",
                     message: "删除成功!"
                   });
-                  this.getdepInfo()
+                  this.getdepInfo();
                   var parms = {
                     currentPage: 1,
                     name: ""
@@ -646,7 +642,7 @@ export default {
                 } else {
                   this.$message.error(res.data.msg);
                 }
-
+                this.allLoading = true;
                 this.getAllList(this.args);
               })
               .catch(err => Error(err));
@@ -666,13 +662,24 @@ export default {
           .addStaff()
           .then(res => {
             if (res.data.result == 3) {
-              this.$message.error(res.data.msg);
+              this.$confirm(res.data.msg, "温馨提示", {
+                confirmButtonText: "联系客服",
+                cancelButtonText: "",
+                showCancelButton: false,
+                type: "warning",
+                center: true
+              })
+                .then(() => {
+                  window.open(
+                    "http://wpa.qq.com/msgrd?v=3&uin=1196070365&site=qq&menu=yes"
+                  );
+                })
+                .catch(() => {});
               return;
             }
             this.scanAdd = true;
             this.addStaffIMG = res.data.data.img;
             this.addStaffUrl = res.data.data.url;
-            console.log("res.dta", res.data.data.img);
           })
           .catch(err => Error(err));
       } else {
@@ -680,11 +687,22 @@ export default {
           .addStaff()
           .then(res => {
             if (res.data.result == 3) {
-              this.$message.error(res.data.msg);
+              this.$confirm(res.data.msg, "温馨提示", {
+                confirmButtonText: "联系客服",
+                cancelButtonText: "",
+                showCancelButton: false,
+                type: "warning",
+                center: true
+              })
+                .then(() => {
+                  window.open(
+                    "http://wpa.qq.com/msgrd?v=3&uin=1196070365&site=qq&menu=yes"
+                  );
+                })
+                .catch(() => {});
               return;
             }
             this.personLink = true;
-            console.log("res.dta", res.data.data.img);
             this.addStaffUrl = res.data.data.url;
             this.addStaffIMG = res.data.data.img;
           })
@@ -694,17 +712,18 @@ export default {
 
     //切换tabs
     handleClick(tab) {
-      console.log(tab.name);
       this.activeName = tab.name;
-      if (this.activeName == "first") this.getAllList(this.args);
-      else {
+      if (this.activeName == "first") {
+        this.allLoading = true;
+        this.getAllList(this.args);
+      } else {
+        this.SHLoading = true;
         this.staff_list_log(this.argsSH);
       }
     },
 
     //所有员工表的多选
     handleSelectionChange(val) {
-      console.log("val", val);
       if (val.length != 0) {
         this.hasSelectAll = true;
         val.forEach((ele, idx) => {
@@ -717,10 +736,8 @@ export default {
     },
     //审核员工的多选
     // handleSelectionChangeSH(val) {
-    //   console.log(11111111111);
 
     //   if (val.length != 0) {
-    //   console.log("val", val);
 
     //     this.hasSelectAll = true;
     //     val.forEach((ele, idx) => {
@@ -735,15 +752,16 @@ export default {
     //搜索课程
     searchCont(e) {
       this.argsSH.name = this.search;
-      if (this.activeName == "first") this.getAllList(this.argsSH);
-      else {
+      if (this.activeName == "first") {
+        this.allLoading = true;
+        this.getAllList(this.argsSH);
+      } else {
         this.staff_list_log(this.argsSH);
       }
     },
     //确认转移
     saveShiftStaff() {
       this.shift = false;
-      console.log("this.dep_id", this.dep_id);
 
       var set = this.uniq(this.idList);
       set = set.join(",");
@@ -759,6 +777,7 @@ export default {
           } else {
             this.$message.error(res.data.msg);
           }
+          this.allLoading = true;
           this.getAllList(this.args);
         })
         .catch(err => Error(err));
@@ -774,7 +793,6 @@ export default {
     },
     //跳转添加账号页面
     toBuyCount() {
-      console.log("params", this.$route);
       this.$storage.set("historyPath", this.$route.fullPath);
       this.$router.push({
         path: "./buyLesson",
@@ -786,16 +804,16 @@ export default {
     },
     //编辑部门
     editDep() {
-      if (!this.EditDepId) {
+      if (!this.isClickTree) {
         this.$message.error("请选择一个部门");
         return;
       }
       this.EditDepent = true;
+      this.isClickTree = false;
     },
     //确认编辑部门
     confirmEditDep() {
       var that = this;
-      console.log("this.EditDepId", that.EditDepId);
 
       var parms = {
         dep_id: that.EditDepId,
@@ -804,7 +822,6 @@ export default {
       this.$api.companyInfo
         .dep_opt(parms)
         .then(res => {
-          console.log("res", res);
           if (res.data.result == 0) {
             this.$message.success("编辑成功");
           } else {
@@ -818,16 +835,13 @@ export default {
     },
     // 获取部门信息
     getdepInfo() {
-      console.log(",我进来了");
-
       this.$api.companyInfo
         .company()
         .then(res => {
           this.use_count = res.data.data.use_count;
-          console.log("this.use_count", this.use_count);
-
           this.total_count = res.data.data.total_count;
           this.gourpArr = res.data.data.dep_groupby;
+          this.specialArr = this._.cloneDeep(this.gourpArr)
           this.gourpArr.forEach((ele, idx) => {
             ele.dep_name = ele.dep_name + "  (" + ele.total + ")";
           });
@@ -835,7 +849,23 @@ export default {
         })
         .catch(err => Error(err));
     },
-
+    deepClone(obj) {
+      let objClone = Array.isArray(obj) ? [] : {};
+      if (obj && typeof obj === "object") {
+        for (key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            //判断ojb子元素是否为对象，如果是，递归复制
+            if (obj[key] && typeof obj[key] === "object") {
+              objClone[key] = deepClone(obj[key]);
+            } else {
+              //如果不是，简单复制
+              objClone[key] = obj[key];
+            }
+          }
+        }
+      }
+      return objClone;
+    },
     //删除员工（批量）
     deleteStaff() {
       if (this.idList.length == 0) {
@@ -858,7 +888,7 @@ export default {
             .deleteStaff(parms)
             .then(res => {
               if (res.data.result == 0) {
-                this.getdepInfo()
+                this.getdepInfo();
                 this.$message({
                   type: "success",
                   message: "删除成功!"
@@ -866,7 +896,7 @@ export default {
               } else {
                 this.$message.error(res.data.msg);
               }
-
+              this.allLoading = true;
               this.getAllList(this.args);
             })
             .catch(err => Error(err));
@@ -886,14 +916,13 @@ export default {
     }
   },
   mounted() {
+    if (this.$route.query.params == "SH") this.activeName = "second";
     this.getAllList(this.args);
     this.getdepInfo();
     // this.addStaff();
     this.staff_list_log(this.argsSH);
   },
-  watch: {
-
-  }
+  watch: {}
 };
 </script>
 <style lang="less" scoped>
@@ -901,15 +930,22 @@ export default {
   position: relative;
 }
 .box-card {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  // width: 100%;
+  // height: 100%;
+  // display: flex;
+  // flex-direction: column;
+  padding: 0px 30px;
+  background: rgb(255, 255, 255);
+  height: auto;
 }
 .wrap_card {
   // height: 100%;
-  margin: 0 35px;
-  padding-bottom: 60px;
+  height: 100%;
+  background: #fff;
+  margin: 0 35px 70px 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .el-tabs {
   /deep/ .el-tabs__content {
@@ -970,12 +1006,12 @@ export default {
   cursor: pointer;
 }
 .el-pagination {
-  justify-content: center;
-  display: flex;
-  bottom: 45px;
-  padding: 20px 0;
-  position: absolute;
-  left: 50%;
+  // justify-content: center;
+  // display: flex;
+  // bottom: 45px;
+  // padding: 20px 0;
+  // position: absolute;
+  // left: 50%;
 }
 .el-dropdown-link {
   cursor: pointer;
@@ -1012,5 +1048,12 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 16px;
+}
+.block {
+  margin-bottom: 50px;
+  background-color: #fff;
+  padding: 30px 0;
+  display: flex;
+  justify-content: center;
 }
 </style>

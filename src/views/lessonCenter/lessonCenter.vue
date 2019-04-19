@@ -168,42 +168,6 @@ export default {
         })
         .catch(err => {});
     },
-    //判断是否购买该课程包
-    // judgeLessonBuy(id) {
-    //   var parms = {
-    //     package_id: id
-    //   };
-    //   this.$api.lessonCenter
-    //     .judgeLessonBuy(parms)
-    //     .then(res => {
-    //       console.log("data", res.data);
-    //       this.isBuyMsg = res.data.msg;
-    //       this.$api.lessonCenter
-    //         .getCurrentLesson(parms)
-    //         .then(res => {
-    //           var lessArr = [];
-    //           lessArr = res.data.data.package.play_url;
-    //           //去播放内页
-    //           // this.$router.push({
-    //           //   path: "./studyVideo",
-    //           //   query: {
-    //           //     package_id: id,
-    //           //     isBuyLesson: res.data.data,
-    //           //     lessArr: lessArr,
-    //           //     msg: this.isBuyMsg
-    //           //   }
-    //           // });
-
-    //         })
-    //         .catch(err => {
-    //           Error(err);
-    //         });
-    //     })
-    //     .catch(err => {
-    //       Error(err);
-    //     });
-    // },
-
     //跳转到课程详情
     toLessonDetail(id) {
       this.$router.push({
@@ -259,7 +223,6 @@ export default {
     }
   },
   mounted() {
-    // console.log('this.', this.$route.query);
     var parm = {
       currentPage: 1,
       timeorder: 1,
@@ -330,6 +293,7 @@ export default {
   width: 267px;
   height: 164px;
   background-color: #6d81a8;
+  background-size: 267px 167px;
 }
 .lesson-info {
   width: 267px;

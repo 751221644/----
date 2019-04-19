@@ -9,7 +9,7 @@
               <img class="logo" :src="companyLogo" alt srcset>
               <h1 class="school-name">{{companyName}}</h1>
             </div>
-            <el-form :model="loginForm" status-icon class="demo-ruleForm">
+            <el-form :model="loginForm" status-icon class="demo-ruleForm" @validate="validate">
               <el-form-item verify phone prop="telNum">
                 <el-input
                   type="text"
@@ -38,7 +38,7 @@
                 <el-button class="btn_sendMsg" type="info" v-else disabled>{{countTime}}</el-button>
               </el-form-item>
               <el-form-item>
-                <el-button class="subBtn" type="primary" @click="submitForm">登录</el-button>
+                <el-button class="subBtn"  :loading="loading" type="primary" @click="submitForm">登录</el-button>
               </el-form-item>
             </el-form>
           </el-card>
@@ -67,25 +67,27 @@ export default {
       countTime: 120,
       url_school_id: null,
       isSend: false, //是否点击了发送按钮
-      rules: {}
+      rules: {},
+      rulesTel: false,
+      loading:false
     };
   },
   methods: {
     submitForm() {
       //登陆
       let that = this;
-      // if (that.loginForm.telNum === null || that.loginForm.capCode === null) {
-      //   that.$message({
-      //     showClose: true,
-      //     message: "请输入验证码或手机号码",
-      //     type: "error"
-      //   });
-      //   return false;
-      // } else {
+      that.loading = true
       //密码登录
       if (this.$route.query.login_tp == 1) {
+        that.loading = false
         parms = this.$route.query;
       } else {
+        
+        if (that.loginForm.telNum === null || that.loginForm.capCode === null) {
+          that.loading = false
+          this.$message.error("请输入手机号或验证码");
+          return;
+        }
         //手机号登录
         var parms = {
           login_tp: 2,
@@ -96,16 +98,14 @@ export default {
       }
       that.$api.toLogin.login(parms).then(res => {
         if (res.data.result == 0) {
+        that.loading = false
+          
           console.log("进入登录", res.data);
-
           that.token = res.data.data.elp_token;
-
           that.$store.dispatch("getPersonInfo", res.data.data);
-
           // that.$store.dispatch("changeLogin", "100");
           // sessionStorage.setItem("ISLOGIN", true);
           that.$storage.set("personInfo", this.$store.state.personInfo);
-
           var args = {
             elp_token: that.token
           };
@@ -113,15 +113,9 @@ export default {
           that.$api.toLogin
             .getUserRole(args)
             .then(res => {
-              console.log("res.data.", res.data.data.user_role);
-
               that.$store.dispatch("getRole", res.data.data.user_role);
-
-              console.log("111111111111", res.data.data.user_role);
-
               that.$storage.set("role", res.data.data.user_role);
-              that.$storage.set("isChange","isChange");
-
+              that.$storage.set("isChange", "isChange");
               // that.$storage.set("changeRole", res.data.data.user_role);
             })
             .catch(err => {
@@ -178,9 +172,19 @@ export default {
           //   });
         } else {
           this.$message.error(res.data.msg);
+          that.loading = false
         }
       });
+
       // }
+    },
+    validate(props, object) {
+      if (props == "telNum") {
+        this.rulesTel = false;
+        if (props == "telNum" && object) {
+          this.rulesTel = true;
+        }
+      }
     },
     getLoginInfo() {
       let prams = {
@@ -198,10 +202,13 @@ export default {
     },
     //发手机验证码
     sendMsg() {
-      if (this.loginForm.telNum === null) {
-        this.$message.error("请先输入手机号");
+      console.log("this.rulesTel", this.rulesTel);
+
+      if (this.loginForm.telNum === null || !this.rulesTel) {
+        this.$message.error("请输入正确的电话号码");
         return;
       }
+
       var _this = this;
       _this.countTime = 120;
 

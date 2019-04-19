@@ -169,7 +169,6 @@ export default{
 						new_name:this.form.name
 					};
 					this.$api.person.updateUsername(params).then(res => {
-						console.log(res);
 						if(res.data.result == 0){
 							this.user = this.form.name;
 							this.form.dialogFormVisible = false;
@@ -194,7 +193,6 @@ export default{
 						verifycode_new:this.form2.yzm2
 					};
 					this.$api.global.modifyMobile(param).then(res => {
-						console.log(res);
 						if(res.data.result == 0){
 							this.$message('绑定成功');
 							this.form2.dialogFormVisible = false;
@@ -246,7 +244,6 @@ export default{
 			var _this = this;
 			var captcha1 = new TencentCaptcha(_this.$config.TencentCaptcha_appid, function(r) {
 		        if (r.ret === 0) {
-			          console.log('r2',_this);
 		        	let args = {
 			            "mobile": _this.tel,
 			            "ticket": r.ticket,
@@ -255,7 +252,6 @@ export default{
 		        	 _this.$api.global
 			            .getMsg(args)
 			            .then(res => {
-			              console.log(res);
 			              let result = res.data;
 			              if (result.result == 0) {//倒计时
 			              	_this.form2.a = false;
@@ -283,7 +279,6 @@ export default{
 			var _this = this;
 			var captcha1 = new TencentCaptcha(_this.$config.TencentCaptcha_appid, function(r) {
 		        if (r.ret === 0) {
-			          console.log('r2',_this);
 		        	let args = {
 			            "mobile": _this.form2.newTel,
 			            "ticket": r.ticket,
@@ -292,7 +287,6 @@ export default{
 		        	 _this.$api.global
 			            .getMsg(args)
 			            .then(res => {
-			              console.log(res);
 			              let result = res.data;
 			              if (result.result == 0) {//倒计时
 			              	_this.form2.c = false;
@@ -335,12 +329,9 @@ export default{
 		    this.$api.school
 		        .create_school(parms)
 		        .then(res => {
-		          console.log("res.data.data.school_id", res.data.data.school_id);
 		          this.$api.toLogin
 		                .getUserRole(parms)
 		                .then(res => {
-		                  console.log(res);
-		                  // console.log('this.Sfewqfewqgeqw',this.$store.state);
 		                  var _res = res;
               this.$storage.set("isChange","isChange");
 		                  this.$storage.set("changeRole", res.data.data.user_role);
@@ -350,7 +341,6 @@ export default{
 	                    		this.$router.push({path:'companyManage',query: { changeSchool:'1'}});
 			            		
 			            	}else{
-			            		console.log('studyCenter');
 		            			this.$router.push({path:'studyCenter',query: { changeSchool:'1'}});
 			            		location.reload();
 			            	}

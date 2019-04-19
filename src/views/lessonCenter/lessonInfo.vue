@@ -1,6 +1,6 @@
 <template>
-  <div class="wrap_card">
-    <el-card class="box-card" body-style=" height: 100%;">
+  <div class="wrap_card" v-cloak>
+    <div class="wrap_lessson">
       <div slot="header" class="clearfix">
         <img class="img_tump" :src="packageInfo.thumb" alt>
         <div class="right_info">
@@ -84,7 +84,7 @@
         </div>
       </div>
       <div class="text item l_r_wrap">
-        <div class="left">
+        <div class="left" v-cloak>
           <div class="flex align-c" style="padding-bottom:20px">
             <div class="title_blue"></div>
             <span style="margin-left:10px;font-size: 16px;">课程介绍</span>
@@ -169,7 +169,7 @@
           </div>
         </div>
       </div>
-    </el-card>
+    </div>
   </div>
 </template>
 <script>
@@ -195,7 +195,7 @@ export default {
         sources: [
           {
             type: "application/x-mpegURL",
-            src: this.videoUrl
+            src: 'https://1251763412.vod2.myqcloud.com/4f5c9e67vodtransgzp1251763412/cc849ebf5285890784419639486/v.f220.m3u8?t=5cb9a729&exper=0&us=CN7YI8XCPwb4&sign=2baaf6bffd1ba2827552fc2dcdddd477'
           }
         ],
         width: document.documentElement.clientWidth,
@@ -215,7 +215,7 @@ export default {
       },
       rules: {
         c_name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { required: true, message: "请输入活动名称", trigger: "blur" }
         ],
         name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         region: [
@@ -274,9 +274,6 @@ export default {
   methods: {
     //去购买子账号
     toBuyCount() {
-      // console.log("this.package", this.$route.query.package_id);
-      console.log("this.$route.fullPath", this.$route.fullPath);
-
       this.$storage.set("historyPath", this.$route.fullPath);
 
       this.$router.push({
@@ -307,15 +304,12 @@ export default {
               Error(err);
             });
         } else {
-          console.log("error submit!!");
           return false;
         }
       });
     },
     // 跳转至分配课程
     allotLesson() {
-      console.log("pack", this.$route.query.package_id);
-
       let prams = {
         packageID: this.$route.query.package_id
       };
@@ -324,7 +318,6 @@ export default {
 
     //跳转到购买页面
     buyLesson() {
-      console.log("this.$route.fullPath", this.$route.fullPath);
       this.$storage.set("historyPath", this.$route.fullPath);
       this.$router.push({
         path: "./buyLesson",
@@ -351,9 +344,7 @@ export default {
         })
         .catch(err => Error(err));
     },
-    onPlayerPlay(player) {
-      console.log("player play!", player);
-    },
+    onPlayerPlay(player) {},
     getLessonInfo(package_id) {
       const that = this;
       var parms = {
@@ -393,15 +384,14 @@ export default {
 
           that.packageInfo = res.data.data.package;
           that.intro = that.packageInfo.intro;
-          console.log("intro", that.intro);
 
           that.lessonList = res.data.data.cates;
           that.childCountP = res.data.data.tody_total;
           that.enp_people = res.data.data.enp_people;
           if (res.data.data.package.play_url[0]) {
             that.player.src(res.data.data.package.play_url[0]);
+            that.playerOptions.sources[0].src = res.data.data.package.play_url[0]
           }
-          console.log("endTime", res.data);
 
           that.status = res.data.data.status;
         })
@@ -412,15 +402,15 @@ export default {
     applyView() {
       this.dialogFormVisible = true;
     },
-    handleChange(value) {
-      console.log(value);
-    },
+    handleChange(value) {},
+    
     changeQuelity(e) {
       let _time = this.$refs.videoPlayer.player.currentTime();
       const that = this;
       that.$route.query.lessArr.forEach((ele, idx) => {
         if (e == idx) {
           that.player.src(ele);
+          that.playerOptions.sources[0].src = ele
           that.player.load();
           that.player.currentTime(_time);
         }
@@ -432,7 +422,15 @@ export default {
 </script>
 <style  scoped>
 @import url("../../theme/flex.less");
-
+.wrap_lessson {
+  padding: 0px 30px;
+  background: rgb(255, 255, 255);
+  height: auto;
+  margin-bottom: 50px;
+}
+[v-cloak] {
+  display: none !important;
+}
 .text {
   font-size: 14px;
   flex: 1;
@@ -518,8 +516,14 @@ export default {
   height: 800px;
 }
 .wrap_card {
+  /* height: auto;
+  margin: 0 35px 60px; */
   height: 100%;
-  margin: 0 35px 60px;
+  background: #fff;
+  margin: 0 35px 70px 35px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .left {
   border-right: 1px solid #ebeef5;
@@ -566,7 +570,7 @@ h1 {
 }
 .l_r_wrap {
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 .lessonList {
   font-family: "PingFang-SC-Regular";

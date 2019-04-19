@@ -5,25 +5,46 @@
         <div class="d-item">
           <div class="d-i-overly">
             <div class="tt">已购课程</div>
-            <div class="ct">
-              <b>{{companyInfo.payPackage}}</b>
+            <div class="ct" style="cursor: pointer;" @click="toLessonManage">
+              <count-to
+                class="ct_b"
+                :start-val="0"
+                :end-val="companyInfo.payPackage"
+                :duration="2000"
+              />
             </div>
           </div>
         </div>
         <div class="d-item">
           <div class="d-i-overly">
             <div class="tt">已添加/总账号数</div>
-            <div class="ct">
-              <b>{{companyInfo.addAccount}}</b>
-              /{{companyInfo.allAccount}}
+            <div class="ct" style="cursor: pointer;"  @click="toStaffManage('all')">
+                <count-to
+                class="ct_b"
+                :start-val="0"
+                :end-val="companyInfo.addAccount"
+                :duration="2000"
+              />/
+                  <count-to
+                  style="font-size:30px"
+                class="ct_b"
+                :start-val="0"
+                :end-val="companyInfo.allAccount"
+                :duration="2000"
+              />
             </div>
           </div>
         </div>
         <div class="d-item">
           <div class="d-i-overly">
             <div class="tt">申请加入</div>
-            <div class="ct">
-              <b>{{companyInfo.accessAccount}}</b>
+            <div class="ct" style="cursor: pointer;" @click="toStaffManage('SH')">
+                <count-to
+                class="ct_b"
+                :start-val="0"
+                :end-val="companyInfo.accessAccount"
+                :duration="2000"
+              />
             </div>
           </div>
         </div>
@@ -41,7 +62,7 @@
         <div class="ct">
           <div class="links">
             <div class="link-item">
-              <router-link class="l-i-layout" to="/lessonCenter">
+              <router-link class="l-i-layout" to="/lessonManage">
                 <i class="icon"></i>
                 <div class="title">
                   <h2>课程管理</h2>
@@ -94,7 +115,7 @@
     >
       <el-form :model="form">
         <span class="title_d">给您的企业大学起个名字吧</span>
-        <el-form-item >
+        <el-form-item>
           <el-input v-model="form.name" autocomplete="off" placeholder="例：三茅大学"></el-input>
         </el-form-item>
         <el-form-item>
@@ -113,6 +134,8 @@
 import homeHeader from "../../components/header";
 import Cookies from "js-cookie";
 import router from "../../router/index.js";
+import CountTo from "vue-count-to";
+
 // import VueRouter from 'vue-router'
 
 export default {
@@ -133,12 +156,18 @@ export default {
       hasSchool: false
     };
   },
-  components: { homeHeader },
+  components: { homeHeader, CountTo },
 
   mounted() {
     this._companyInfo();
   },
   methods: {
+    toLessonManage(args){
+      this.$router.push({path:"./LessonManage",query:{params:args}})
+    },
+    toStaffManage(args){
+      this.$router.push({path:"./staffManage",query:{params:args}})
+    },
     //创建大学
     createSchool() {
       var parms = {
@@ -149,8 +178,8 @@ export default {
         .then(res => {
           if (res.data.data.school_id) {
             this.hasSchool = false;
-            this.$message.success('创建大学成功！')
-            location.reload()
+            this.$message.success("创建大学成功！");
+            location.reload();
           }
         })
         .catch(err => {
@@ -167,8 +196,7 @@ export default {
       self.$api.companyInfo
         .company(args)
         .then(res => {
-          console.log('创建大学',res.data);
-          
+
           if (res.data.result === 0) {
             let {
               ispay_package,
@@ -178,15 +206,14 @@ export default {
               school_info
             } = res.data.data;
 
-            self.companyInfo.payPackage = ispay_package;
-            self.companyInfo.addAccount = use_count;
-            self.companyInfo.allAccount = total_count;
-            self.companyInfo.accessAccount = access_count;
+            self.companyInfo.payPackage = Number(ispay_package);
+            self.companyInfo.addAccount = Number(use_count) 
+            self.companyInfo.allAccount =  Number(total_count) 
+            self.companyInfo.accessAccount = Number(access_count)
             self.companyInfo.endTime = school_info.end_time_str;
-
             // self.ORDERLIST = data;
             // self.pagesNum = +count;
-          }else if (res.data.result == 66) {
+          } else if (res.data.result == 66) {
             self.hasSchool = true;
           } else {
             self.$message.error(res.data.msg);
@@ -195,13 +222,19 @@ export default {
         .catch(err => {});
     }
   },
-  beforeRouteEnter(to,from,next) {
-    console.log(to,from);
-    if((to.path == '/companyManage'&&to.query.changeSchool&&from.path == '/person')||(to.path == '/studyCenter'&&to.query.changeSchool&&from.path == '/person')){
-      next(()=>{
+  beforeRouteEnter(to, from, next) {
+    if (
+      (to.path == "/companyManage" &&
+        to.query.changeSchool &&
+        from.path == "/person") ||
+      (to.path == "/studyCenter" &&
+        to.query.changeSchool &&
+        from.path == "/person")
+    ) {
+      next(() => {
         window.location.reload();
       });
-    }else{
+    } else {
       next();
     }
   }
@@ -211,6 +244,7 @@ export default {
 //引入基础less文件
 @import (reference) "../../style/mixins/_var.less";
 @import (reference) "../../style/mixins/index.less";
+
 .title_d {
   font-size: 24px;
   padding-bottom: 45px;
@@ -236,8 +270,8 @@ export default {
 }
 .el-form-item {
   width: 100%;
-      display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 .el-input {
   /deep/ input {
@@ -295,6 +329,12 @@ export default {
       }
     }
   }
+}
+.ct_b {
+  font-size: 50px;
+  font-weight: normal;
+  margin-top: 35px;
+
 }
 .layout {
   padding: 30px;

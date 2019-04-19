@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app"  v-cloak>
     <router-view  v-wechat-title='$route.name'/>
   </div>
 </template>
@@ -11,6 +11,9 @@ export default {
 </script>
 
 <style lang="less">
+[v-cloak]{
+			display: none!important
+		}
 #app {
   height: 100%;
   padding: 0;

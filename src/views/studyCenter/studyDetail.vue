@@ -1,5 +1,5 @@
 <template>
-  <section style="padding:30px 35px;">
+  <section style="padding: 0 30px 30px 35px;">
     <div style="padding:30px;background:#ffffff;">
       <ul class="ul1">
         <li class="box">
@@ -112,7 +112,6 @@ export default {
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab, event);
       if (tab.name == "first") {
         this.isTabShow = true;
       } else if (tab.name == "second") {
@@ -124,7 +123,6 @@ export default {
         package_id: this.package_id
       };
       this.$api.person.studyDeatil(params).then(res => {
-        console.log(res);
         if(res.data.result == 0){
           if (res.data.data) {
             this.thumb = res.data.data.package.thumb;
@@ -136,7 +134,6 @@ export default {
             this.catId = res.data.data.catid;
             this.course_id = res.data.data.course_id;
             this.editor = res.data.data.package.intro;
-            console.log('1111111111111111111111111111111111111111111intro',this.intro);
             this.getCourse(this.catId);
           }
         }else{
@@ -164,11 +161,9 @@ export default {
         name: this.searchValue
       };
       this.$api.person.studyDeatilList(params).then(res => {
-        console.log(res);
         if(res.data.result == 0){
           if (res.data.data) {
             this.courseList = res.data.data;
-            console.log(this.courseList);
             for (let i = 0; i < this.courseList.length; i++) {
               if (this.courseList[i].is_study == 0) {
                 this.courseList[i].is_study_re = "开始学习";
@@ -267,7 +262,6 @@ export default {
       }
     },
     startvideo(course_id) {
-      console.log("course_id111111", course_id);
       this.juageLesson(course_id);
     },
     //判断课程是否为光华的
@@ -280,7 +274,6 @@ export default {
         .playVideo(parms)
         .then(res => {
           if (res.data.data.type == 2) {
-            console.log(res.data.data.redirect_url);
 			     var href = res.data.data.redirect_url;
 			     window.open(href)
           } else if (res.data.data.type == 1) {

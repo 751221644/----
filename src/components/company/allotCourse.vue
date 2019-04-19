@@ -124,7 +124,16 @@ export default {
                 type: "warning",
                 center: true
               })
-              .then(() => {})
+              .then(() => {
+                self.$storage.set("historyPath", self.$route.fullPath);
+                self.$router.push({
+                  path: "./buyLesson",
+                  query: {
+                    count: 1,
+                    onlyBuyCount: true
+                  }
+                });
+              })
               .catch(() => {});
           } else if (res.data.result === 2) {
             self
@@ -135,7 +144,11 @@ export default {
                 type: "warning",
                 center: true
               })
-              .then(() => {})
+              .then(() => {
+                window.open(
+                  "http://wpa.qq.com/msgrd?v=3&uin=1196070365&site=qq&menu=yes"
+                );
+              })
               .catch(() => {});
           } else {
             self.$message.error(res.data.msg);
@@ -168,14 +181,13 @@ export default {
      */
     _loadNode(node, resolve) {
       let self = this;
-      console.log("node", node); 
       if (node.level === 0) {
         let arr = self.depGroupby;
         let arr1 = [];
         for (let index = 0; index < arr.length; index++) {
           let ele = arr[index];
           // arr1.push({ dep_id: ele.id, dep_name: ele.name, disabled: true });
-          arr1.push({ dep_id: ele.id, dep_name: ele.name});
+          arr1.push({ dep_id: ele.id, dep_name: ele.name });
         }
         return resolve(arr1);
       } else if (node.level === 1) {
@@ -202,11 +214,15 @@ export default {
                   ele.disabled == 1
                     ? Object.assign(options, { disabled: true })
                     : "";
-                  self.$refs.treeForm.getCurrentNode() ? self.$refs.treeForm.getCurrentNode().disabled = false : '';
+                  self.$refs.treeForm.getCurrentNode()
+                    ? (self.$refs.treeForm.getCurrentNode().disabled = false)
+                    : "";
                   children.push(options);
                 }
                 //如果部门下有员工,则放开父节点的全选框
-                self.$refs.treeForm.getCurrentNode() ? self.$refs.treeForm.getCurrentNode().disabled = false : '';
+                self.$refs.treeForm.getCurrentNode()
+                  ? (self.$refs.treeForm.getCurrentNode().disabled = false)
+                  : "";
               } else {
                 self.$message.warning("该部门下还没有添加员工~");
               }
@@ -216,7 +232,6 @@ export default {
             return resolve(children);
           })
           .catch(err => {
-            console.log("err", err);
           });
       } else {
         return resolve([]);
@@ -224,8 +239,6 @@ export default {
     },
     // _currentChange(data,node){
     //   let self = this
-    //   console.info('data',data)
-    //   console.info('node',node)
     //   self.$refs.treeForm.setCurrentNode(data)
     // },
     /**
@@ -236,7 +249,7 @@ export default {
     _selectUserClick(data, checked, indeterminate) {
       let self = this;
       let arr = self.$refs.treeForm.getCheckedNodes(1); //所有被选中的子节点数据
-      arr.length == 0 ? self.$message.warning('未选中员工') : ''
+      arr.length == 0 ? self.$message.warning("未选中员工") : "";
       self.staffData = arr;
     },
     /**
@@ -283,7 +296,16 @@ export default {
                 type: "warning",
                 center: true
               })
-              .then(() => {})
+              .then(() => {
+         self.$storage.set("historyPath", self.$route.fullPath);
+      self.$router.push({
+        path: "./buyLesson",
+        query: {
+          count: 1,
+          onlyBuyCount: true
+        }
+      });
+              })
               .catch(() => {});
           } else if (res.data.result === 2) {
             self
@@ -293,14 +315,17 @@ export default {
                 type: "warning",
                 center: true
               })
-              .then(() => {})
+              .then(() => {
+                window.open(
+                  "http://wpa.qq.com/msgrd?v=3&uin=1196070365&site=qq&menu=yes"
+                );
+              })
               .catch(() => {});
           } else {
             self.$message.error(res.data.msg);
           }
         })
         .catch(err => {
-          console.log("err", err);
         });
     },
     /**
@@ -335,7 +360,6 @@ export default {
           }
         })
         .catch(err => {
-          console.log("err", err);
         });
     },
     //关闭选择分配员工后 刷新树
@@ -356,7 +380,6 @@ export default {
     },
     //查看分配详情
     _checkDetails() {
-      // console.info('this.$route',this.$route)
 
       if (this.$route.path.indexOf("companyDetails") > -1) {
         location.reload();
@@ -376,7 +399,9 @@ export default {
 //引入基础less文件
 @import (reference) "../../style/mixins/_var.less";
 @import (reference) "../../style/mixins/index.less";
-
+.select-layout .select-overly[data-v-7c4e51e2]::-webkit-scrollbar-thumb{
+  background-color: #fff
+}
 //选择分配员工
 .select-layout {
   height: 400px;

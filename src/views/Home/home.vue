@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <homeHeader @getAnt="toclick"></homeHeader>
-    <div style="display:flex;height:auto">
+    <div style="display:flex; height: 100%;">
       <div class="flex-d myCen">
         <div class="company_name">
           <p class="tabContail">{{nickname}}</p>
@@ -28,7 +28,7 @@
               <template slot="title">
                 <i class="univ_icon" :class="item.icon"></i>
                 <!-- <img v-if="" :src="item.icon" alt="">
-                <img :src="item.activeicon" alt=""> -->
+                <img :src="item.activeicon" alt="">-->
                 <span>{{item.name}}</span>
               </template>
               <el-menu-item
@@ -41,7 +41,7 @@
             <!-- <el-menu-item v-if="item.ref" :index="item.path">
               <i :class="item.icon"></i>
               {{item.name}}
-            </el-menu-item> -->
+            </el-menu-item>-->
           </template>
         </el-menu>
       </div>
@@ -56,7 +56,7 @@
             >{{ item.name }}</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
-        <div  class="flex-d container_view" style="min-height:900px;">
+        <div class="flex-d container_view">
           <router-view></router-view>
         </div>
       </div>
@@ -80,7 +80,6 @@ export default {
   },
   components: { homeHeader },
   mounted() {
-
     this.personInfo = this.$storage.get("personInfo");
     this.nickname = this.personInfo.userinfo.nickname;
     this.imageUrl = this.$imagePath + "elp/logo1.png";
@@ -93,11 +92,9 @@ export default {
   },
   methods: {
     handleOpen(key, keyPath) {
-      // console.log(key, keyPath)
     },
     handleClose(key, keyPath) {},
     handleSelect(key, keyPath) {
-      console.log(key, keyPath)
     },
     //侧边栏收缩，暂时不用
     toclick(args) {
@@ -108,15 +105,12 @@ export default {
     },
     beforeAvatarUpload(file, id) {
       let self = this;
-      console.log(file);
       let formData = new FormData();
       formData.append("imgFile", file);
-      console.log('formData',formData);
-      
+
       this.$api.article
         .Upload(formData)
         .then(res => {
-          console.log("res", res);
         })
         .catch(err => {});
       // const isJPG = file.type === 'image/jpeg';
@@ -130,13 +124,12 @@ export default {
       // }
       // return isJPG && isLt2M;
     }
-  },
+  }
 };
 </script>
  <style lang="less" scoped>
- @import url('../../theme/color.less');
- @import url("../../assets/iconfont/iconfont.css");
-
+@import url("../../theme/color.less");
+@import url("../../assets/iconfont/iconfont.css");
 
 .univ_icon {
   font-size: 18px;
@@ -154,9 +147,9 @@ export default {
   }
   /deep/.el-menu-item {
     background-color: #1c2845 !important;
-    &.is-active{
-      background-color: #3b8cff!important;
-      color:white!important;
+    &.is-active {
+      background-color: #3b8cff !important;
+      color: white !important;
     }
   }
 }
@@ -177,6 +170,7 @@ export default {
 }
 .container {
   height: 100%;
+  background-color: #f1f1f1;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
   width: 200px;
@@ -223,14 +217,14 @@ h2 {
   width: 200px;
   height: 140px;
   line-height: 140px;
-  text-align: center
+  text-align: center;
 }
 .view_right {
   width: 100%;
   margin-left: 200px;
   margin-top: 60px;
   background-color: @themeBac;
-  overflow: hidden;
+  overflow: auto;
 }
 .myCen {
   height: 100%;
@@ -240,9 +234,9 @@ h2 {
 .breadcrumb-inner {
   margin-top: 60px;
 }
-.container_view{
-  width:100%;
-  height:auto; 
-  background-color: @themeBac
+.container_view {
+  width: 100%;
+  height: 100%;
+  background-color: @themeBac;
 }
 </style>

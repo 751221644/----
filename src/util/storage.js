@@ -8,7 +8,6 @@ var storage = {
     },
     //取出数据
     get(key) {
-        console.log(localStorage.getItem(key));
         if(localStorage.getItem(key) != 'undefined'){
             return JSON.parse(localStorage.getItem(key));
         }else{

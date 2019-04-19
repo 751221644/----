@@ -14,13 +14,11 @@ const lessonCenter = {
     },
     // //判断是否已购买该课程
     // judgeLessonBuy(params) {
-    //     console.log('parm,s', params);
 
     //     return http.post('/hr/elp/course/is_buy_package', qs.stringify(params));
     // },
     //获取当前课程包信息
     getCurrentLesson(params) {
-        console.log('parms', params);
 
         return http.post('/hr/elp/course/package_product', qs.stringify(params));
 

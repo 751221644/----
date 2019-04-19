@@ -51,13 +51,11 @@ const errorHandle = (status, other) => {
             Message.error({ message: '服务器被吃了⊙﹏⊙∥' });
             break;
         default:
-            console.log(other);
     }
 }
 
 // 创建axios实例
 var http = axios.create({ baseURL: '/api', timeout: 1000 * 12 });
-console.log('我用了http实例');
 
 // 设置post请求头
 http.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -89,8 +87,6 @@ http.interceptors.response.use(
     res => {
         // closeLoading();
         if (res.status == 200) {
-            console.log('*********************恭喜，请求成功*********************');
-            console.log('this.message',res.data.result);
             //请求100登录失效
             if(res.data.result==100){
                 window.location.href = 'https://peixun.2haohr.com/i'
@@ -113,7 +109,7 @@ http.interceptors.response.use(
             // eg:请求超时或断网时，更新state的network状态
             // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
             // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
-            store.commit('changeNetwork', false);
+            // store.commit('changeNetwork', false);
         }
     });
 
