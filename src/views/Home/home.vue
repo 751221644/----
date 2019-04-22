@@ -38,10 +38,6 @@
                 :index="child.path"
               >{{child.name}}</el-menu-item>
             </el-submenu>
-            <!-- <el-menu-item v-if="item.ref" :index="item.path">
-              <i :class="item.icon"></i>
-              {{item.name}}
-            </el-menu-item>-->
           </template>
         </el-menu>
       </div>
@@ -49,7 +45,7 @@
         <div class="pad">
           <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item
-              :to="{ path: '/' }"
+               :to="{path: $route.matched[0].meta.path}"
               separator-class="el-icon-arrow-right"
               v-for="item in $route.matched"
               :key="item.path"
@@ -83,6 +79,9 @@ export default {
     this.personInfo = this.$storage.get("personInfo");
     this.nickname = this.personInfo.userinfo.nickname;
     this.imageUrl = this.$imagePath + "elp/logo1.png";
+    console.log('$route.matched',this.$route.matched);
+    console.log('$route.matched', this.$route.matched[0].name);
+    
 
     // //方法1: 直接生成一个验证码对象
     // var captcha1 = new TencentCaptcha("appId", function(res) {

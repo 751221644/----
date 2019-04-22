@@ -152,27 +152,33 @@ export default {
     this.$api.lessonCenter
       .playVideo(parms)
       .then(res => {
-        this.course_list = res.data.data.cates;
-        this.cateArr = res.data.data.cates
-        
-        this.course_list.forEach((ele, idx) => {
-          if (ele.id == res.data.data.course.catid) {
-            this.courseId = idx; //外层菜单展开的index
-            ele.course_list.forEach((el, ix) => {
-              if (el.course_id == parms.course_id) {
-                this.currentId = ix; //子菜单的当前激活index
-                this.course_name = el.name;
-              }
-            });
-          }
-        });
-        //视频的清晰度数组
-             this.VideoArr = res.data.data.course.play_urls;
-        //默认视频src是标清
-             this.playerOptions.sources[0].src = this.VideoArr[0]
-            //  this.player.src(this.VideoArr[0]);
-            
-            //  this.player.play();
+        if(res.data.result==0){
+
+          this.course_list = res.data.data.cates;
+          this.cateArr = res.data.data.cates
+          
+          this.course_list.forEach((ele, idx) => {
+            if (ele.id == res.data.data.course.catid) {
+              this.courseId = idx; //外层菜单展开的index
+              ele.course_list.forEach((el, ix) => {
+                if (el.course_id == parms.course_id) {
+                  this.currentId = ix; //子菜单的当前激活index
+                  this.course_name = el.name;
+                }
+              });
+            }
+          });
+          //视频的清晰度数组
+               this.VideoArr = res.data.data.course.play_urls;
+          //默认视频src是标清
+               this.playerOptions.sources[0].src = this.VideoArr[0]
+              //  this.player.src(this.VideoArr[0]);
+              
+              //  this.player.play();
+        }
+        else{
+          this.$message.error(res.data.msg)
+        }
       })
       .catch(err => {
         Error(err);

@@ -1,36 +1,36 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import _ from 'lodash'
 import Vue from 'vue'
+import api from './api'
 import App from './App'
-import router from './router'
-import VueRouter from 'vue-router'
 import store from './store'
-import ElementUI from 'element-ui';
-import 'element-ui/lib/theme-chalk/index.css';
+import echarts from 'echarts'
+import base from './api/base'
+import router from './router'
+import tools from './util/tools'
+import global from './api/global'
+import config from './util/config'
+import VueRouter from 'vue-router'
+import ElementUI from 'element-ui'
+import storage from './util/storage'
+import VueClipboard from 'vue-clipboard2'
+import elementUIVerify from 'element-ui-verify'
+import VueWechatTitle from 'vue-wechat-title'
+import VueVideoPlayer from 'vue-video-player'
 import './theme/color.less'
 import './theme/index.less'
 import './theme/flex.less'
-import echarts from 'echarts'
-import api from './api'
-import global from './api/global'
 import 'babel-polyfill';
-import base from './api/base'
-import storage from './util/storage'
-import tools from './util/tools'
-import elementUIVerify from 'element-ui-verify'
-import config from './util/config'
-import VueWechatTitle from 'vue-wechat-title'
-import VueVideoPlayer from 'vue-video-player'
+import 'element-ui/lib/theme-chalk/index.css';
 import 'videojs-contrib-hls.js/src/videojs.hlsjs'
-import VueClipboard from 'vue-clipboard2'
-import _ from 'lodash'
 Vue.use(VueClipboard)
 Vue.use(VueVideoPlayer)
 Vue.use(VueWechatTitle)
 Vue.use(VueRouter)
 
 Vue.config.productionTip = false
-Vue.prototype._ = _
+Vue.prototype._ = _                            //lodash
 Vue.prototype.$echarts = echarts              //echart
 Vue.prototype.$api = api                     //api调用封装出口
 Vue.prototype.$global = global               //全局通用函数
@@ -49,10 +49,11 @@ router.beforeEach((to, from, next) => {
     } else {
       if (!store.getters.info) {
         !async function getAddRouters() {
+          console.log('store.getters.info',store.getters);
+          
           await store.dispatch('getInfo', store.getters.info)
           await store.dispatch('newRoutes', store.getters.info.role)
           await router.addRoutes(store.state.addRouters)
-          // next({ path: '/lessonCenter' })
           var _role = storage.get('role')
           var isChange = storage.get('isChange')
           //权限为普通用户时

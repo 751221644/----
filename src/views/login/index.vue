@@ -81,9 +81,7 @@ export default {
       if (this.$route.query.login_tp == 1) {
         that.loading = false
         parms = this.$route.query;
-      } else {
-        
-        if (that.loginForm.telNum === null || that.loginForm.capCode === null) {
+      } else {if (that.loginForm.telNum === null || that.loginForm.capCode === null) {
           that.loading = false
           this.$message.error("请输入手机号或验证码");
           return;
@@ -99,24 +97,18 @@ export default {
       that.$api.toLogin.login(parms).then(res => {
         if (res.data.result == 0) {
         that.loading = false
-          
-          console.log("进入登录", res.data);
           that.token = res.data.data.elp_token;
           that.$store.dispatch("getPersonInfo", res.data.data);
-          // that.$store.dispatch("changeLogin", "100");
-          // sessionStorage.setItem("ISLOGIN", true);
           that.$storage.set("personInfo", this.$store.state.personInfo);
           var args = {
             elp_token: that.token
           };
-          // sessionStorage.setItem["tokensss"] = that.token;
           that.$api.toLogin
             .getUserRole(args)
             .then(res => {
               that.$store.dispatch("getRole", res.data.data.user_role);
               that.$storage.set("role", res.data.data.user_role);
               that.$storage.set("isChange", "isChange");
-              // that.$storage.set("changeRole", res.data.data.user_role);
             })
             .catch(err => {
               Error(err);
@@ -143,13 +135,6 @@ export default {
                       that.$router.push({ path: "/lessonCenter" });
                     }
                   }
-                  // if(res.data.data.data.data.length==0){
-
-                  // }else{
-                  // that.$router.push({ path: "/lessonCenter" });
-
-                  // }
-                  // console.log("allSchoolArr", this.allSchoolArr);
                 })
                 .catch(err => {
                   Error(err);
@@ -162,14 +147,6 @@ export default {
                 type: "error"
               });
             });
-          // if (res.data.result == 100) {
-          // } else {
-          //   that.$api.person.getSchoolId({}).then(res => {
-          //     console.log(res);
-          //     // localStorage.setItem("currentSchoolId",res.data.data.school_id)
-          //     this.$store.dispatch("schoolId", res.data.data.school_id);
-          //     console.log(this.$store.state);
-          //   });
         } else {
           this.$message.error(res.data.msg);
           that.loading = false

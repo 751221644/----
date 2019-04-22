@@ -8,15 +8,15 @@ import Cookies from 'js-cookie'
 // import createPersistedState from "vuex-persistedstate"
 Vue.use(Vuex)
 const state = {
-    isLogin:0, 
+    isLogin: 0,
     info: '', // 每次刷新都要通过token请求个人信息来筛选动态路由
     routers: [],//所有有权限的路由表，用来生成菜单列表
     addRouters: [],// 保存动态路由用来addRouter
     token: Cookies.get('token'),
-    personInfo:{
+    personInfo: {
     },//用户信息
-    currentSchoolId:'',
-    orderTotalPrice:null
+    currentSchoolId: '',
+    orderTotalPrice: null
 }
 
 

@@ -42,7 +42,7 @@ let defaultRouter = [
     component: home,
     icon: 'icon-lesson',
     hasChild: false,//只有一个节点
-    meta: { role: ['admin'], auth: true },
+    meta: { role: ['admin'], auth: true,path:'/lessonCenter' },
     children: [{
       path: '/lessonCenter',
       name: '课程中心',
@@ -77,7 +77,7 @@ let addRouter = [
     component: home,
     icon: 'icon-study',
     hasChild: true,//
-    meta: { role: ['admin', 'staff'], auth: true },
+    meta: { role: ['admin', 'staff'], auth: true ,path:'/studyCenter'},
     children: [
       {
         path: '/studyCenter',
@@ -114,7 +114,7 @@ let addRouter = [
     component: home,
     icon: "icon-mmanage",
     hasChild: true,//
-    meta: { role: ['admin'], auth: true },
+    meta: { role: ['admin'], auth: true,path:'/companyManage'},
     children: [
       {
         path: '/companyManage',
@@ -152,9 +152,9 @@ let addRouter = [
   },
   {
     path: '/',
-    name: '',
+    name: '个人中心',
     component: home,
-    meta: { role: ['admin', 'staff'], auth: true },
+    meta: { role: ['admin', 'staff'], auth: true,path:'/person' },
     icon: 'icon-person',
     hasChild: false,//只有一个节点
     children: [{

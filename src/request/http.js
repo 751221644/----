@@ -75,7 +75,6 @@ http.interceptors.request.use(
         token && (config.headers.Authorization = token);
         config.headers.elptoken = token
         // config.headers.Cookie = 'token='+token
-
         return config;
     },
     error => Promise.error(error))
@@ -86,15 +85,18 @@ http.interceptors.response.use(
     // res => res.status === 200 ? Promise.resolve(res) : Promise.reject(res),
     res => {
         // closeLoading();
+        console.log('res.data.result',res.data.result);
+        
         if (res.status == 200) {
             //请求100登录失效
-            if(res.data.result==100){
+            if(res.data.result==100||res.data.result==98){
                 window.location.href = 'https://peixun.2haohr.com/i'
                  Message.error(res.data.msg)
             }
             // Message.success('请求成功')
             return res;
         }
+       
     },
     // 请求失败
     error => {
