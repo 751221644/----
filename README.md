@@ -18,7 +18,7 @@ vue.company 是一个后台管理系统，它基于 vue 和 element-ui实现。�
 
 
 #### 如有问题 欢迎 issue 和 email
-![img](https://github.com/751221644/qydx/blob/master/static/1.gif)
+![img](https://github.com/751221644/qydx/blob/master/static/2.gif)
 
 ## 开发
 
